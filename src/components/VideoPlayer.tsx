@@ -122,7 +122,7 @@ export function VideoPlayer({
   }, [videoId]); // Re-run when video changes
 
   const startPolling = () => {
-    if (pollIntervalRef.current || isReadOnly || isCompleted) return;
+    if (pollIntervalRef.current || isReadOnly) return;
     
     lastTimeRef.current = playerRef.current.getCurrentTime();
     
@@ -137,7 +137,7 @@ export function VideoPlayer({
         const newPct = trackerRef.current.getWatchPercentage();
         setPercentage(newPct);
 
-        const newlyCompleted = trackerRef.current.isCompleted();
+        const currentlyCompleted = trackerRef.current.isCompleted();
         
         const data = {
           battleId,
@@ -145,11 +145,10 @@ export function VideoPlayer({
           videoId,
           segments: trackerRef.current.getSegments(),
           watchPercentage: newPct,
-          isCompleted: newlyCompleted
+          isCompleted: currentlyCompleted
         };
 
-        if (newlyCompleted) {
-          stopPolling();
+        if (currentlyCompleted && !isCompletedRef.current) {
           syncRef.current.forceSync(data);
         } else {
           syncRef.current.scheduleSync(data);
@@ -172,7 +171,7 @@ export function VideoPlayer({
       startPolling();
     } else {
       stopPolling();
-      if (syncRef.current && trackerRef.current && !isReadOnly && !isCompletedRef.current) {
+      if (syncRef.current && trackerRef.current && !isReadOnly) {
         // Force sync on pause or end
         syncRef.current.forceSync({
           battleId,
