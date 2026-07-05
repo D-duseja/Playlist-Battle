@@ -125,24 +125,22 @@ export class ProgressSync {
     if (this.isSyncing || !this.pendingData) return;
 
     this.isSyncing = true;
-    const data = this.pendingData;
-    this.pendingData = null;
 
-    try {
-      await this.syncFn(data);
-    } catch (error) {
-      // Re-queue the data so it's not lost on transient failures
-      console.error('[ProgressSync] Sync failed, re-queuing data:', error);
-      if (!this.pendingData) {
-        this.pendingData = data;
-      }
-    } finally {
-      this.isSyncing = false;
+    while (this.pendingData) {
+      const data = this.pendingData;
+      this.pendingData = null;
 
-      // If new data arrived while we were syncing, schedule another sync
-      if (this.pendingData) {
-        this.scheduleSync(this.pendingData);
+      try {
+        await this.syncFn(data);
+      } catch (error) {
+        console.error('[ProgressSync] Sync failed, re-queuing data:', error);
+        if (!this.pendingData) {
+          this.pendingData = data;
+        }
+        break; // Stop looping on error, let next scheduled sync try again
       }
     }
+
+    this.isSyncing = false;
   }
 }

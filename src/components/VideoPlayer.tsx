@@ -36,12 +36,15 @@ export function VideoPlayer({
 
   const [percentage, setPercentage] = useState(existingProgress?.watchPercentage || 0);
   const [isCompleted, setIsCompleted] = useState(existingProgress?.status === 'COMPLETED');
+  const isCompletedRef = useRef(existingProgress?.status === 'COMPLETED');
   const [error, setError] = useState<string | null>(null);
 
   // Initialize YT IFrame API
   useEffect(() => {
     // If we're already completed, we just render the player without tracking
-    setIsCompleted(existingProgress?.status === 'COMPLETED');
+    const initiallyCompleted = existingProgress?.status === 'COMPLETED';
+    setIsCompleted(initiallyCompleted);
+    isCompletedRef.current = initiallyCompleted;
     setPercentage(existingProgress?.watchPercentage || 0);
     
     // Initialize Tracker and Sync
@@ -55,7 +58,7 @@ export function VideoPlayer({
         watchedSegments: data.segments,
         watchPercentage: data.watchPercentage,
         status: data.isCompleted ? 'COMPLETED' : 'IN_PROGRESS',
-        completedAt: data.isCompleted && !isCompleted ? new Date() : undefined,
+        completedAt: data.isCompleted && !isCompletedRef.current ? new Date() : undefined,
       });
 
       // Call parent callback
@@ -68,11 +71,12 @@ export function VideoPlayer({
         watchedSegments: data.segments,
         watchPercentage: data.watchPercentage,
         status: data.isCompleted ? 'COMPLETED' : 'IN_PROGRESS',
-        completedAt: data.isCompleted && !isCompleted ? new Date() : existingProgress?.completedAt || null,
+        completedAt: data.isCompleted && !isCompletedRef.current ? new Date() : existingProgress?.completedAt || null,
         updatedAt: new Date(),
       });
 
-      if (data.isCompleted && !isCompleted) {
+      if (data.isCompleted && !isCompletedRef.current) {
+        isCompletedRef.current = true;
         setIsCompleted(true);
         incrementCompletedLectures(battleId, userId).catch(err => 
           console.error("Failed to update leaderboard:", err)
@@ -168,7 +172,7 @@ export function VideoPlayer({
       startPolling();
     } else {
       stopPolling();
-      if (syncRef.current && trackerRef.current && !isReadOnly && !isCompleted) {
+      if (syncRef.current && trackerRef.current && !isReadOnly && !isCompletedRef.current) {
         // Force sync on pause or end
         syncRef.current.forceSync({
           battleId,
