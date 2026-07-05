@@ -1,0 +1,154 @@
+.container {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h3 {
+  font-size: 1.125rem;
+  margin: 0;
+  font-family: var(--font-outfit);
+}
+
+.badge {
+  font-size: 0.75rem;
+  color: var(--color-danger);
+  background: rgba(239, 68, 68, 0.1);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.highlight {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.winnerRow {
+  background: rgba(234, 179, 8, 0.1);
+}
+
+.rank {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  width: 24px;
+  text-align: center;
+}
+
+.winnerRow .rank {
+  font-size: 1.5rem;
+}
+
+.avatarWrapper {
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.avatarPlaceholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-bg-secondary);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.name {
+  font-weight: 500;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.youBadge {
+  padding: 2px 6px !important;
+  font-size: 0.65rem !important;
+}
+
+.progressTrack {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.5s ease-out;
+}
+
+.score {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.completed {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: var(--font-outfit);
+}
+
+.total {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
