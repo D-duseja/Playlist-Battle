@@ -240,9 +240,12 @@ export async function updateVideoProgress(
 ): Promise<void> {
   const progressId = `${battleId}_${userId}_${videoId}`;
   const updateData: any = {
-    ...data,
+    watchedSegments: data.watchedSegments,
+    watchPercentage: data.watchPercentage,
+    status: data.status,
     updatedAt: serverTimestamp()
   };
+  
   if (data.completedAt !== undefined) {
       updateData.completedAt = data.completedAt ? Timestamp.fromDate(data.completedAt) : null;
   }
