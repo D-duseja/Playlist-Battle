@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { WatchSegment, UserProgress } from '@/types';
 import { TimelineTracker } from '@/lib/timeline-tracker';
 import { ProgressSync } from '@/lib/progress-sync';
-import { updateVideoProgress } from '@/lib/firestore';
+import { updateVideoProgress, incrementCompletedLectures } from '@/lib/firestore';
 import { ProgressBar, Badge } from '@/components/ui';
 import styles from './VideoPlayer.module.css';
 
@@ -74,6 +74,9 @@ export function VideoPlayer({
 
       if (data.isCompleted && !isCompleted) {
         setIsCompleted(true);
+        incrementCompletedLectures(battleId, userId).catch(err => 
+          console.error("Failed to update leaderboard:", err)
+        );
       }
     });
 

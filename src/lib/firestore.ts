@@ -192,6 +192,14 @@ export async function updateParticipantProgress(battleId: string, userId: string
   });
 }
 
+export async function incrementCompletedLectures(battleId: string, userId: string): Promise<void> {
+  const participantId = `${battleId}_${userId}`;
+  await updateDoc(doc(db, 'participants', participantId), {
+    completedLectures: increment(1),
+    lastCompletedAt: serverTimestamp(),
+  });
+}
+
 // Progress operations
 export async function getProgress(battleId: string, userId: string): Promise<UserProgress[]> {
   const q = query(
