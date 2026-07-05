@@ -213,6 +213,13 @@ export async function getProgress(battleId: string, userId: string): Promise<Use
     return {
       id: doc.id,
       ...data,
+      watchedSegments: (data.watchedSegments || []).map((s: any) => {
+        if (typeof s === 'string') {
+          const parts = s.split('-');
+          return [parseFloat(parts[0]), parseFloat(parts[1])] as WatchSegment;
+        }
+        return s; // Fallback for empty array or legacy
+      }),
       completedAt: data.completedAt?.toDate() || null,
       updatedAt: data.updatedAt?.toDate(),
     } as UserProgress;
@@ -227,6 +234,13 @@ export async function getVideoProgress(battleId: string, userId: string, videoId
   return {
     id: docSnap.id,
     ...data,
+    watchedSegments: (data.watchedSegments || []).map((s: any) => {
+      if (typeof s === 'string') {
+        const parts = s.split('-');
+        return [parseFloat(parts[0]), parseFloat(parts[1])] as WatchSegment;
+      }
+      return s; // Fallback
+    }),
     completedAt: data.completedAt?.toDate() || null,
     updatedAt: data.updatedAt?.toDate(),
   } as UserProgress;
@@ -240,7 +254,7 @@ export async function updateVideoProgress(
 ): Promise<void> {
   const progressId = `${battleId}_${userId}_${videoId}`;
   const updateData: any = {
-    watchedSegments: data.watchedSegments,
+    watchedSegments: data.watchedSegments.map(s => `${s[0]}-${s[1]}`),
     watchPercentage: data.watchPercentage,
     status: data.status,
     updatedAt: serverTimestamp()
